@@ -8,7 +8,6 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "make-dmg": "rm -f ./out/Skipper.dmg && appdmg ./dmg.config.json ./out/Skipper.dmg",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
