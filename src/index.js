@@ -38,7 +38,6 @@ function createMenuItem() {
       resizable: false,
       // vibrancy: "popover",
       transparent: true,
-      y: 30,
       width: 460,
       height: 550,
       alwaysOnTop: true,

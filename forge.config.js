@@ -1,4 +1,5 @@
 const path = require("path");
+const env = require("./.env.js");
 
 module.exports = {
   packagerConfig: {
@@ -46,6 +47,20 @@ module.exports = {
         additionalDMGOptions: {
           title: "Skipper-1.0.0",
         },
+      },
+    },
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        authToken: env.getToken(),
+        repository: {
+          owner: "getskipper",
+          name: "skipper-native",
+        },
+        prerelease: false,
+        draft: true,
       },
     },
   ],
