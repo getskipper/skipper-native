@@ -2,7 +2,10 @@ const { app, shell, BrowserWindow } = require("electron");
 const { menubar } = require("menubar");
 const path = require("path");
 
-const iconPath = path.join(__dirname, "icon.png");
+const iconPath = path.join(__dirname, "iconTemplate.png");
+
+const isLocal = true;
+const URL = isLocal ? "http://localhost:3000" : "https://getskipper.dev/app";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -28,7 +31,7 @@ const createWindow = () => {
 // Creates the menu bar item.
 function createMenuItem() {
   const mb = menubar({
-    index: "https://getskipper.dev/app",
+    index: URL,
     preloadWindow: true,
     nodeIntegration: true,
     icon: iconPath,
@@ -46,9 +49,9 @@ function createMenuItem() {
   });
 
   // Close the menu window when the user is changing windows.
-  mb.app.on("browser-window-blur", () => {
-    mb.hideWindow();
-  });
+  // mb.app.on("browser-window-blur", () => {
+  //   mb.hideWindow();
+  // });
 
   mb.on("ready", () => {
     console.log("menubar app is ready");
