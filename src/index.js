@@ -1,50 +1,42 @@
-const { app, shell, BrowserWindow } = require("electron");
+const { app, shell, session } = require("electron");
 const { menubar } = require("menubar");
 const path = require("path");
 
 const iconPath = path.join(__dirname, "iconTemplate.png");
 
 const isLocal = true;
-const URL = isLocal ? "http://localhost:3000" : "https://getskipper.dev/app";
+const URL = isLocal ? "http://localhost:3000/appv2" : "https://getskipper.dev";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
-const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 700,
-    frame: false,
-    backgroundColor: "#090C22",
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-    },
-  });
-
-  // and load the index.html of the app.
-  mainWindow.loadURL("https://getskipper.dev/");
-};
-
 // Creates the menu bar item.
 function createMenuItem() {
   const mb = menubar({
     index: URL,
     preloadWindow: true,
-    nodeIntegration: true,
+    nodeIntegration: false,
+    contextIsolation: true,
     icon: iconPath,
     browserWindow: {
-      preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true,
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+      },
+      nodeIntegration: false,
+      contextIsolation: true,
       resizable: false,
-      // vibrancy: "popover",
       transparent: true,
-      width: 460,
-      height: 550,
+      width: 650,
+      height: 660,
       alwaysOnTop: true,
       frame: false,
+
+      transparency: true,
+      backgroundColor: "#00000000", // transparent hexadecimal or anything with transparency,
+      vibrancy: "hud",
+      visualEffectState: "followWindow",
     },
   });
 
@@ -55,14 +47,30 @@ function createMenuItem() {
 
   mb.on("ready", () => {
     console.log("menubar app is ready");
-    // setTimeout(() => mb.tray.setImage(icon_2_Path), 3000)
+    mb.window.webContents.openDevTools();
+
+    // https://www.electronjs.org/docs/latest/tutorial/security#csp-http-headers
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          "Content-Security-Policy": [
+            "default-src https://github.com https://github.githubassets.com https://avatars.githubusercontent.com 'none'",
+          ],
+        },
+      });
+    });
 
     mb.window.webContents.setWindowOpenHandler(({ url }) => {
-      if (url.startsWith("https:") || url.startsWith("http:")) {
+      if (url.startsWith("https:")) {
         shell.openExternal(url);
       }
       return { action: "deny" };
     });
+  });
+
+  mb.on("focus-lost", () => {
+    // Can close window.
   });
 }
 
