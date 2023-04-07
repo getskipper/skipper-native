@@ -4,7 +4,7 @@ const path = require("path");
 
 const iconPath = path.join(__dirname, "iconTemplate.png");
 
-const isLocal = true;
+const isLocal = false;
 const URL = isLocal ? "http://localhost:3000/appv2" : "https://getskipper.dev";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
