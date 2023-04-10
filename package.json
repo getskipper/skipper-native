@@ -1,8 +1,8 @@
 {
   "name": "skipper-native",
   "productName": "Skipper",
-  "version": "1.1.0",
-  "description": "My Electron application description",
+  "version": "1.1.1",
+  "description": "Native executables for different platforms to launch the Skipper app.",
   "main": "src/index.js",
   "scripts": {
     "dev": "electron .",
