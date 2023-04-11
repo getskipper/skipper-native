@@ -55,7 +55,7 @@ function createMenuItem() {
         responseHeaders: {
           ...details.responseHeaders,
           "Content-Security-Policy": [
-            "default-src https://getskipper.dev https://github.com https://github.githubassets.com https://avatars.githubusercontent.com 'none'",
+            "default-src https://getskipper.dev https://fonts.googleapis.com https://api.github.com https://github.com https://github.githubassets.com https://avatars.githubusercontent.com 'none'",
           ],
         },
       });
