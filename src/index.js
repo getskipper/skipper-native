@@ -5,7 +5,7 @@ const path = require("path");
 const iconPath = path.join(__dirname, "iconTemplate.png");
 
 const isLocal = false;
-const URL = isLocal ? "http://localhost:3000/appv2" : "https://getskipper.dev";
+const URL = isLocal ? "http://localhost:3000/app" : "https://getskipper.dev/app";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -28,8 +28,8 @@ function createMenuItem() {
       contextIsolation: true,
       resizable: false,
       transparent: true,
-      width: 650,
-      height: 660,
+      width: 580,
+      height: 620,
       alwaysOnTop: true,
       frame: false,
 
@@ -41,13 +41,13 @@ function createMenuItem() {
   });
 
   // Close the menu window when the user is changing windows.
-  // mb.app.on("browser-window-blur", () => {
-  //   mb.hideWindow();
-  // });
+  mb.app.on("browser-window-blur", () => {
+    mb.hideWindow();
+  });
 
   mb.on("ready", () => {
     console.log("menubar app is ready");
-    mb.window.webContents.openDevTools();
+    // mb.window.webContents.openDevTools();
 
     // https://www.electronjs.org/docs/latest/tutorial/security#csp-http-headers
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -55,7 +55,22 @@ function createMenuItem() {
         responseHeaders: {
           ...details.responseHeaders,
           "Content-Security-Policy": [
-            "default-src https://getskipper.dev https://fonts.googleapis.com https://api.github.com https://github.com https://github.githubassets.com https://avatars.githubusercontent.com 'none'",
+            `
+            ; default-src
+              https://getskipper.dev
+              https://gstatic.com
+              https://fonts.gstatic.com
+              https://fonts.googleapis.com
+              https://googleapis.com
+              https://api.github.com
+              https://github.com
+              https://github.githubassets.com
+              https://avatars.githubusercontent.com
+              https://okta.com
+              https://*.okta.com
+              https://oktacdn.com
+              https://*.oktacdn.com
+            `,
           ],
         },
       });
