@@ -4,4 +4,14 @@ const { contextBridge } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
   canContact: () => true,
+  sendNotification: ({ title, body, cb }) => {
+    const notif = new Notification(title, {
+      body,
+    });
+
+    notif.onclick = () => {
+      console.info("[native] Clicked", cb);
+      cb();
+    };
+  },
 });

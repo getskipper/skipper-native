@@ -7,8 +7,8 @@ const path = require("path");
 // ============ Variables =============
 // ====================================
 
-const IS_LOCAL = false;
-const IS_DEBUGGING = false;
+const IS_LOCAL = true;
+const IS_DEBUGGING = true;
 
 // ====================================
 // ============= Helpers ==============
@@ -24,17 +24,25 @@ function log(...args) {
 // ============ Constants =============
 // ====================================
 
-const APP_URL = IS_LOCAL ? "http://localhost:3000/app" : "https://getskipper.dev/app";
+const APP_URL = IS_LOCAL ? "http://localhost:8080/app" : "https://getskipper.dev";
 const iconPath = path.join(__dirname, "iconTemplate.png");
 
 // ====================================
 // ============== Core ================
 // ====================================
 
-function urlShouldHaveInlineEval(url) {
+function isUrlFromOktaSSO(url) {
   const parsed = new URL(url);
   const domain = parsed.hostname.split(".").slice(-2);
   if (domain[0] === "okta" || domain[0] === "oktacdn") {
+    return true;
+  }
+}
+
+function isUrlFromLocalhost(url) {
+  const parsed = new URL(url);
+  const domain = parsed.hostname.split(".").slice(-2);
+  if (domain[0] === "localhost") {
     return true;
   }
 }
@@ -89,7 +97,31 @@ function createMenuItem() {
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
       log("details", details.url);
 
-      if (urlShouldHaveInlineEval(details.url)) {
+      if (isUrlFromLocalhost(details.url)) {
+        callback({
+          responseHeaders: {
+            ...details.responseHeaders,
+            "Content-Security-Policy": [
+              `default-src
+                'self'
+                'unsafe-inline'
+                'unsafe-eval'
+                https://gstatic.com
+                https://fonts.gstatic.com
+                https://fonts.googleapis.com
+                https://googleapis.com
+                https://api.github.com
+                https://github.com
+                https://github.githubassets.com
+                https://avatars.githubusercontent.com
+            `,
+            ],
+          },
+        });
+        return;
+      }
+
+      if (isUrlFromOktaSSO(details.url)) {
         log("\tunsafe");
         callback({
           responseHeaders: {
