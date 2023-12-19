@@ -7,8 +7,8 @@ const path = require("path");
 // ============ Variables =============
 // ====================================
 
-const IS_LOCAL = true;
-const IS_DEBUGGING = true;
+const IS_LOCAL = false;
+const IS_DEBUGGING = false;
 
 // ====================================
 // ============= Helpers ==============
