@@ -1,4 +1,4 @@
-const { app, shell, session, BrowserWindow } = require("electron");
+const { app, shell, session } = require("electron");
 const { menubar } = require("menubar");
 const URL = require("url-parse");
 const path = require("path");
@@ -24,8 +24,11 @@ function log(...args) {
 // ============ Constants =============
 // ====================================
 
-const APP_URL = IS_LOCAL ? "http://localhost:8080/app" : "https://getskipper.dev";
+const URL_BASE = IS_LOCAL ? "http://localhost:8080" : "https://getskipper.dev";
+
+const APP_URL = `${URL_BASE}/app`;
 const iconPath = path.join(__dirname, "iconTemplate.png");
+const notifIconPath = path.join(__dirname, "notif_iconTemplate.png");
 
 // ====================================
 // ============== Core ================
@@ -95,7 +98,7 @@ function createMenuItem() {
 
     // https://www.electronjs.org/docs/latest/tutorial/security#csp-http-headers
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-      log("details", details.url);
+      // log("details", details.url);
 
       if (isUrlFromLocalhost(details.url)) {
         callback({
@@ -160,6 +163,19 @@ function createMenuItem() {
           ],
         },
       });
+    });
+
+    session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+      // log(Object.keys(details));
+      // log("->", details.url);
+
+      if (details.url.includes(`${URL_BASE}/has-unread-updates`)) {
+        mb.tray.setImage(notifIconPath);
+      } else if (details.url.includes(`${URL_BASE}/no-unread-updates`)) {
+        mb.tray.setImage(iconPath);
+      }
+
+      callback(details);
     });
 
     // mb.window.webContents.on("will-navigate", (event, newUrl) => {

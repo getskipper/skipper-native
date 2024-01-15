@@ -10,7 +10,6 @@ contextBridge.exposeInMainWorld("electron", {
     });
 
     notif.onclick = () => {
-      console.info("[native] Clicked", cb);
       cb();
     };
   },
