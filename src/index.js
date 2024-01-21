@@ -171,7 +171,7 @@ function createMenuItem() {
         const count = parseInt(countStr, 10);
 
         if (!isNaN(count)) {
-          mb.tray.setTitle(countStr, { fontType: "monospacedDigit" });
+          mb.tray.setTitle(String(count), { fontType: "monospacedDigit" });
         }
       } else if (details.url.includes(`${URL_BASE}/no-unread-updates`)) {
         mb.tray.setTitle("");
