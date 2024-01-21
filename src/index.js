@@ -28,7 +28,6 @@ const URL_BASE = IS_LOCAL ? "http://localhost:8080" : "https://getskipper.dev";
 
 const APP_URL = `${URL_BASE}/app`;
 const iconPath = path.join(__dirname, "iconTemplate.png");
-const notifIconPath = path.join(__dirname, "notif_iconTemplate.png");
 
 // ====================================
 // ============== Core ================
@@ -166,28 +165,20 @@ function createMenuItem() {
     });
 
     session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-      // log(Object.keys(details));
-      // log("->", details.url);
-
       if (details.url.includes(`${URL_BASE}/has-unread-updates`)) {
-        mb.tray.setImage(notifIconPath);
+        log(details.url);
+        const [, countStr] = details.url.split("/has-unread-updates/");
+        const count = parseInt(countStr, 10);
+
+        if (!isNaN(count)) {
+          mb.tray.setTitle(countStr, { fontType: "monospacedDigit" });
+        }
       } else if (details.url.includes(`${URL_BASE}/no-unread-updates`)) {
-        mb.tray.setImage(iconPath);
+        mb.tray.setTitle("");
       }
 
       callback(details);
     });
-
-    // mb.window.webContents.on("will-navigate", (event, newUrl) => {
-    // if (newUrl.indexOf("https://github.com/login/oauth/authorize") > -1) {
-    //   event.preventDefault();
-    //   const win = new BrowserWindow({
-    //     height: 600,
-    //     width: 800,
-    //   });
-    //   win.loadURL(newUrl);
-    // }
-    // });
 
     mb.window.webContents.setWindowOpenHandler(({ url }) => {
       if (url.startsWith("https:")) {
