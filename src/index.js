@@ -4,6 +4,20 @@ const URL = require("url-parse");
 const path = require("path");
 
 // ====================================
+// ============ Protocall =============
+// ====================================
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient("skipper-client", process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  } else {
+    app.setAsDefaultProtocolClient("skipper-client");
+  }
+}
+
+// ====================================
 // ============ Variables =============
 // ====================================
 
@@ -85,7 +99,7 @@ function createMenuItem() {
   // Close the menu window when the user is changing windows.
   mb.app.on("browser-window-blur", () => {
     if (IS_DEBUGGING) return;
-    mb.hideWindow();
+    // mb.hideWindow();
   });
 
   mb.on("ready", () => {
@@ -97,8 +111,18 @@ function createMenuItem() {
 
     // https://www.electronjs.org/docs/latest/tutorial/security#csp-http-headers
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-      // log("details", details.url);
+      log("[load]", details.url);
 
+      if (
+        details.url.startsWith("https://github.com/login/oauth/authorize") ||
+        details.url === `${URL_BASE}/preauthorize-native`
+      ) {
+        log("\t[capture]", details.url);
+        shell.openExternal(details.url);
+        return;
+      }
+
+      // Required for navigating to localhost urls.
       if (isUrlFromLocalhost(details.url)) {
         callback({
           responseHeaders: {
@@ -116,27 +140,6 @@ function createMenuItem() {
                 https://github.com
                 https://github.githubassets.com
                 https://avatars.githubusercontent.com
-            `,
-            ],
-          },
-        });
-        return;
-      }
-
-      if (isUrlFromOktaSSO(details.url)) {
-        log("\tunsafe");
-        callback({
-          responseHeaders: {
-            ...details.responseHeaders,
-            "Content-Security-Policy": [
-              `default-src
-                https://getskipper.dev
-                https://okta.com
-                https://*.okta.com
-                https://oktacdn.com
-                https://*.oktacdn.com
-                'unsafe-inline'
-                'unsafe-eval'
             `,
             ],
           },
@@ -188,8 +191,19 @@ function createMenuItem() {
     });
   });
 
+  mb.on("after-create-window", () => {
+    app.on("open-url", (event, url) => {
+      log("From browser,", url);
+      const code = url.split("skipper-client://")[1].trim();
+      const loginUrl = `${URL_BASE}/authorize?code=${code}`;
+      mb.showWindow();
+      mb.window.loadURL(loginUrl);
+    });
+  });
+
   mb.on("focus-lost", () => {
     // Can close window.
+    mb.hideWindow();
   });
 }
 
@@ -207,11 +221,3 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
-// app.on("activate", () => {
-//   // On OS X it's common to re-create a window in the app when the
-//   // dock icon is clicked and there are no other windows open.
-//   if (BrowserWindow.getAllWindows().length === 0) {
-//     createWindow();
-//   }
-// });

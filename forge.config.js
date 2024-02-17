@@ -4,6 +4,12 @@ const env = require("./.env.js");
 module.exports = {
   packagerConfig: {
     icon: "src/mac-icon",
+    protocols: [
+      {
+        name: "Skipper",
+        schemes: ["skipper-client"],
+      },
+    ],
   },
   rebuildConfig: {},
   makers: [
@@ -17,7 +23,9 @@ module.exports = {
     },
     {
       name: "@electron-forge/maker-deb",
-      config: {},
+      config: {
+        mimeType: ["x-scheme-handler/skipper-client"],
+      },
     },
     {
       name: "@electron-forge/maker-rpm",
