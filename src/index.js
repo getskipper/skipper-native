@@ -4,25 +4,32 @@ const URL = require("url-parse");
 const path = require("path");
 
 // ====================================
+// ============ Variables =============
+// ====================================
+
+const IS_PRODUCTION_BUILD = true;
+const IS_LOCAL = false;
+const IS_DEBUGGING = false;
+
+if (IS_PRODUCTION_BUILD && (IS_LOCAL || IS_DEBUGGING)) {
+  throw new Error("Invalid production build mode.");
+}
+
+// ====================================
 // ============ Protocall =============
 // ====================================
 
-if (process.defaultApp) {
+if (IS_PRODUCTION_BUILD && process.defaultApp) {
   if (process.argv.length >= 2) {
+    log("Modified protocol");
     app.setAsDefaultProtocolClient("skipper-client", process.execPath, [
       path.resolve(process.argv[1]),
     ]);
   } else {
+    log("Modified protocol");
     app.setAsDefaultProtocolClient("skipper-client");
   }
 }
-
-// ====================================
-// ============ Variables =============
-// ====================================
-
-const IS_LOCAL = false;
-const IS_DEBUGGING = false;
 
 // ====================================
 // ============= Helpers ==============
