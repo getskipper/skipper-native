@@ -7,17 +7,27 @@ const path = require("path");
 // ============ Variables =============
 // ====================================
 
+// Set to `true` when finished developing.
+// This is used for making sure we don't accidentally set our local app as
+// the default protocol client. This interfere's with the actual app running, but
+// just for those who run the app in development mode (me).
 const IS_PRODUCTION_BUILD = true;
-const IS_LOCAL = false;
-const IS_DEBUGGING = false;
 
-if (IS_PRODUCTION_BUILD && (IS_LOCAL || IS_DEBUGGING)) {
-  throw new Error("Invalid production build mode.");
-}
+// Set to `true` when developing.
+// This converts the base URL to `localhost` to connect with the local app in dev mode.
+const IS_LOCAL = false;
+
+// Set to `true` when debugging.
+// This enables rich logging in the console.
+const IS_DEBUGGING = false;
 
 // ====================================
 // ============ Protocall =============
 // ====================================
+
+if (IS_PRODUCTION_BUILD && (IS_LOCAL || IS_DEBUGGING)) {
+  throw new Error("Invalid production build mode.");
+}
 
 if (IS_PRODUCTION_BUILD && process.defaultApp) {
   if (process.argv.length >= 2) {
