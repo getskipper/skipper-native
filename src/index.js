@@ -11,15 +11,15 @@ const path = require("path");
 // This is used for making sure we don't accidentally set our local app as
 // the default protocol client. This interfere's with the actual app running, but
 // just for those who run the app in development mode (me).
-const IS_PRODUCTION_BUILD = true;
+const IS_PRODUCTION_BUILD = false;
 
 // Set to `true` when developing.
 // This converts the base URL to `localhost` to connect with the local app in dev mode.
-const IS_LOCAL = false;
+const IS_LOCAL = true;
 
 // Set to `true` when debugging.
 // This enables rich logging in the console.
-const IS_DEBUGGING = false;
+const IS_DEBUGGING = true;
 
 // ====================================
 // ============ Protocall =============
@@ -101,10 +101,11 @@ function createMenuItem() {
       contextIsolation: true,
       resizable: false,
       transparent: true,
-      width: 580,
-      height: 620,
+      width: 570 * 0.9,
+      height: 680 * 0.9,
       alwaysOnTop: true,
       frame: false,
+      acceptFirstMouse: true,
 
       transparency: true,
       backgroundColor: "#00000000", // transparent hexadecimal or anything with transparency,
@@ -115,8 +116,9 @@ function createMenuItem() {
 
   // Close the menu window when the user is changing windows.
   mb.app.on("browser-window-blur", () => {
-    if (IS_DEBUGGING) return;
-    // mb.hideWindow();
+    if (!IS_DEBUGGING) {
+      mb.hideWindow();
+    };
   });
 
   mb.on("ready", () => {
@@ -218,10 +220,9 @@ function createMenuItem() {
     });
   });
 
-  mb.on("focus-lost", () => {
-    // Can close window.
-    mb.hideWindow();
-  });
+  mb.on('after-hide', () => {
+    mb.app.hide()
+  })
 }
 
 // This method will be called when Electron has finished
