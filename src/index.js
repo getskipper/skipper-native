@@ -11,15 +11,15 @@ const path = require("path");
 // This is used for making sure we don't accidentally set our local app as
 // the default protocol client. This interfere's with the actual app running, but
 // just for those who run the app in development mode (me).
-const IS_PRODUCTION_BUILD = false;
+const IS_PRODUCTION_BUILD = true;
 
 // Set to `true` when developing.
 // This converts the base URL to `localhost` to connect with the local app in dev mode.
-const IS_LOCAL = true;
+const IS_LOCAL = false;
 
 // Set to `true` when debugging.
 // This enables rich logging in the console.
-const IS_DEBUGGING = true;
+const IS_DEBUGGING = false;
 
 // ====================================
 // ============ Protocall =============

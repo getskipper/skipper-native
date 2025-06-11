@@ -3,7 +3,7 @@ const env = require("./.env.js");
 
 module.exports = {
   packagerConfig: {
-    icon: "src/mac-icon",
+    icon: "src/mac-icon-v2",
     protocols: [
       {
         name: "Skipper",
@@ -35,7 +35,7 @@ module.exports = {
       name: "@electron-forge/maker-dmg",
       config: {
         background: "./src/dmg-background.png",
-        icon: "./src/mac-icon.png",
+        icon: "./src/mac-icon-v2.png",
         overwrite: true,
         iconSize: 120,
         contents: [
@@ -49,7 +49,7 @@ module.exports = {
             x: 192,
             y: 144,
             type: "file",
-            path: path.resolve(process.cwd(), "out/Skipper-darwin-x64/Skipper.app"),
+            path: path.resolve(process.cwd(), "out/Skipper-mas-arm64/Skipper.app"),
           },
         ],
         additionalDMGOptions: {

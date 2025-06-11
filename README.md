@@ -10,7 +10,7 @@ $ npm run dev
 
 ## Releasing
 
-First, manually bump the version number accordinly.
+First, manually bump the version number accordingly.
 
 ```
 $ npm run make
