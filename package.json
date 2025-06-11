@@ -1,7 +1,7 @@
 {
   "name": "skipper-native",
   "productName": "Skipper",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Native executables for different platforms to launch the Skipper app.",
   "main": "src/index.js",
   "scripts": {
